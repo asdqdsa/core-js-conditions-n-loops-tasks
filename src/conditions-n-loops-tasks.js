@@ -62,8 +62,24 @@ function getMaxNumber(a, b, c) {
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  */
-function canQueenCaptureKing(/* queen, king */) {
-  throw new Error('Not implemented');
+function canQueenCaptureKing(queen, king) {
+  if (queen.x === king.x || queen.y === king.y) return true;
+
+  const [leftRightX, leftRightY] =
+    queen.x >= queen.y
+      ? [queen.x - queen.y + 1, 1]
+      : [1, queen.y - queen.x + 1];
+
+  for (let [x, y] = [leftRightX, leftRightY]; x < 9 && y < 9; x += 1, y += 1) {
+    if (king.x === x && king.y === y) return true;
+  }
+
+  const [rigthLeftX, rightLeftY] = [queen.x - (8 - queen.y), 8];
+  for (let [x, y] = [rigthLeftX, rightLeftY]; x < 9 && y > 0; x += 1, y -= 1) {
+    if (king.x === x && king.y === y) return true;
+  }
+
+  return false;
 }
 
 /**
@@ -84,8 +100,9 @@ function canQueenCaptureKing(/* queen, king */) {
  *  2, 2, 5   => false
  *  3, 0, 3   => false
  */
-function isIsoscelesTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isIsoscelesTriangle(a, b, c) {
+  if (a + b <= c || a + c <= b || c + b <= a) return false;
+  return a === b || a === c || b === c;
 }
 
 /**
@@ -102,10 +119,43 @@ function isIsoscelesTriangle(/* a, b, c */) {
  *  10  => X
  *  26  => XXVI
  */
-function convertToRomanNumerals(/* num */) {
-  throw new Error('Not implemented');
-}
+function convertToRomanNumerals(num) {
+  const romanNumMap = [
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ];
 
+  const getDecimalCount = (summ, base) => [
+    (summ - (summ % base)) / base,
+    summ % base,
+  ];
+
+  const repeatStr = (str, count) => {
+    let output = '';
+    for (let i = 0; i < count; i += 1) output += str;
+    return output;
+  };
+
+  const getRomanStr = (numMap, nums) => {
+    let numSumRest = nums;
+    let output = '';
+
+    for (let i = 0; i < numMap.length; i += 1) {
+      const [summ, base] = [numSumRest, numMap[i][0]];
+      const [count, reminder] = getDecimalCount(summ, base);
+      output += repeatStr(numMap[i][1], count);
+      numSumRest = reminder;
+    }
+
+    return output;
+  };
+
+  const output = getRomanStr(romanNumMap, num);
+  return output;
+}
 /**
  * Converts a number to a string, replacing digits with words.
  * In this task, the use of methods of the String and Array classes is not allowed.
@@ -121,8 +171,65 @@ function convertToRomanNumerals(/* num */) {
  *  '10,5'    => 'one zero point five'
  *  '1950.2'  => 'one nine five zero point two'
  */
-function convertNumberToString(/* numberStr */) {
-  throw new Error('Not implemented');
+function convertNumberToString(numberStr) {
+  let output = '';
+  for (let i = 0; i < numberStr.length; i += 1) {
+    switch (numberStr[i]) {
+      case '1':
+        output += 'one';
+        break;
+
+      case '2':
+        output += 'two';
+        break;
+
+      case '3':
+        output += 'three';
+        break;
+
+      case '4':
+        output += 'four';
+        break;
+
+      case '5':
+        output += 'five';
+        break;
+
+      case '6':
+        output += 'six';
+        break;
+
+      case '7':
+        output += 'seven';
+        break;
+
+      case '8':
+        output += 'eight';
+        break;
+
+      case '9':
+        output += 'nine';
+        break;
+
+      case '0':
+        output += 'zero';
+        break;
+
+      case '.':
+      case ',':
+        output += 'point';
+        break;
+
+      case '-':
+        output += 'minus';
+        break;
+
+      default:
+        break;
+    }
+    if (i !== numberStr.length - 1) output += ' ';
+  }
+  return output;
 }
 
 /**
@@ -202,8 +309,19 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let right = 0;
+  let left = 0;
+  let summ = 0;
+
+  for (let i = 0; i < arr.length; i += 1) summ += arr[i];
+  for (let i = 0; i < arr.length; i += 1) {
+    right = summ - left - arr[i];
+    if (right === left) return i;
+    left += arr[i];
+  }
+
+  return -1;
 }
 
 /**
