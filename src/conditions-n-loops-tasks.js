@@ -475,8 +475,17 @@ function rotateMatrix(eslintlol) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const list = arr;
+  for (let i = 0; i < list.length - 1; i += 1) {
+    const gapVal = list[i + 1];
+    let position = i;
+    while (position >= 0 && list[position] > gapVal) {
+      list[position + 1] = list[position];
+      position -= 1;
+    }
+    list[position + 1] = gapVal;
+  }
 }
 
 /**
