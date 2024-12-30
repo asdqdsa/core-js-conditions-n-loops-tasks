@@ -413,6 +413,7 @@ function getSpiralMatrix(size) {
  */
 function rotateMatrix(eslintlol) {
   const matrix = eslintlol;
+  const rotateDeg = 90;
   const getMatrix = (matrixSize) => {
     const matrixTemp = [];
     let count = 1;
@@ -429,7 +430,26 @@ function rotateMatrix(eslintlol) {
 
   for (let i = 0; i < matrix.length; i += 1) {
     for (let j = 0; j < matrix.length; j += 1) {
-      output[j][matrix.length - i - 1] = matrix[i][j];
+      switch (rotateDeg) {
+        case 90:
+          output[j][matrix.length - i - 1] = matrix[i][j];
+          break;
+
+        case 180:
+          output[matrix.length - i - 1][matrix.length - j - 1] = matrix[i][j];
+          break;
+
+        case 270:
+          output[i][j] = matrix[i][j];
+          break;
+
+        case 360:
+          output[i][j] = matrix[i][j];
+          break;
+
+        default:
+          break;
+      }
     }
   }
 
