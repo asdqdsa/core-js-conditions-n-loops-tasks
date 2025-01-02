@@ -505,8 +505,32 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  const shuffle = (input) => {
+    let [evenOut, oddOut] = ['', ''];
+    for (let i = 0; i < input.length; i += 1) {
+      if (i % 2 === 0) evenOut += input[i];
+      else oddOut += input[i];
+    }
+    return evenOut + oddOut;
+  };
+
+  let validCounts = 0;
+  let result = null;
+  while (result !== str) {
+    result = shuffle(result || str);
+    validCounts += 1;
+    if (validCounts === iterations) return result;
+  }
+  validCounts = iterations % validCounts;
+
+  result = str;
+  while (validCounts > 0) {
+    result = shuffle(result);
+    validCounts -= 1;
+  }
+
+  return result;
 }
 
 /**
@@ -526,8 +550,93 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const reverse = (arrList) => {
+    const arr = arrList;
+    for (let i = 0; i < arr.length / 2; i += 1) {
+      [arr[i], arr[arr.length - 1 - i]] = [arr[arr.length - 1 - i], arr[i]];
+    }
+    return arr;
+  };
+
+  const getListOfNums = (n) => {
+    let num = n;
+    const numList = [];
+    while (num > 0) {
+      const digit = num % 10;
+      numList.push(digit);
+      num = (num - digit) / 10;
+    }
+    return reverse(numList);
+  };
+  const list = getListOfNums(number);
+  if (list.length < 2) return number;
+
+  let peakIdx = -1;
+  for (let i = list.length - 1; i > 0; i -= 1) {
+    if (list[i] > list[i - 1]) {
+      peakIdx = i;
+      break;
+    }
+  }
+
+  if (peakIdx === -1) return number;
+
+  let idx = peakIdx;
+  for (let i = peakIdx; i < list.length; i += 1) {
+    if (list[peakIdx - 1] < list[i] && list[i] < list[idx]) {
+      idx = i;
+    }
+  }
+
+  [list[idx], list[peakIdx - 1]] = [list[peakIdx - 1], list[idx]];
+
+  const slice = (listArr, startIdx, endIdx) => {
+    const arrayList = [];
+    for (let i = startIdx; i < endIdx; i += 1) {
+      arrayList[arrayList.length] = listArr[i];
+    }
+    return arrayList;
+  };
+
+  const sortList = (listToSort, order = 'ASC') => {
+    const arrList = [...listToSort];
+    let compare = () => {};
+    if (order === 'ASC') compare = (a, b) => a > b;
+    for (let i = 0; i < arrList.length - 1; i += 1) {
+      for (let j = i + 1; j < arrList.length; j += 1) {
+        if (compare(arrList[i], arrList[j])) {
+          [arrList[i], arrList[j]] = [arrList[j], arrList[i]];
+        }
+      }
+    }
+    return arrList;
+  };
+
+  const head = slice(list, 0, peakIdx);
+  const tail = sortList(slice(list, peakIdx, list.length), 'ASC');
+
+  const concat = (headList, tailList) => {
+    const res = [];
+    for (let i = 0; i < headList.length; i += 1) {
+      res[res.length] = headList[i];
+    }
+    for (let i = 0; i < tailList.length; i += 1) {
+      res[res.length] = tailList[i];
+    }
+
+    return res;
+  };
+
+  const arrayToNum = (arr) => {
+    let n = 0;
+    for (let i = 0; i < arr.length; i += 1) {
+      n = n * 10 + arr[i];
+    }
+    return n;
+  };
+
+  return arrayToNum(concat(head, tail));
 }
 
 module.exports = {
